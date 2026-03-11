@@ -29,6 +29,9 @@ services:
     environment:
       NODE_ENV: development
       DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-theprimemarket_dev}?schema=public"
+      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: "100"
+      TSC_WATCHFILE: "DynamicPriorityPolling"
     ports:
       - '3000:3000'
     volumes:
@@ -47,6 +50,9 @@ services:
     restart: unless-stopped
     environment:
       VITE_API_URL: http://localhost:3000
+      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: "100"
+      WATCHPACK_POLLING: "true"
     ports:
       - '5173:5173'
     volumes:
