@@ -1,2 +1,71 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
 node_modules
+**/node_modules
+
+# Build output
+dist
+dist-ssr
+build
+*.local
+
+# Environment variables
 .env
+.env.*
+!.env.example
+!.env.*.example
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# NestJS / Backend
+backend/dist
+backend/node_modules
+
+# Frontend / Vite
+frontend/dist
+frontend/node_modules
+frontend/.vite
+
+# Prisma
+backend/prisma/*.db
+backend/prisma/*.db-journal
+
+# Docker
+.dockerignore
+
+# OS
+*.DS_Store
+ehthumbs.db
+Desktop.ini
+
+# Coverage & tests
+coverage
+.nyc_output
+*.lcov
+
+# Cache
+.cache
+.npm
+.yarn/cache
+.pnp.*
