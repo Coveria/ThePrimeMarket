@@ -1,7 +1,7 @@
-// Це лише демонстрація
-
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -15,8 +15,11 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  create(data: { email: string; name?: string }) {
-    return this.prisma.user.create({ data });
+  async create(data: CreateUserDto) {
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    return this.prisma.user.create({
+      data: { ...data, password: hashedPassword },
+    });
   }
 
   remove(id: number) {
