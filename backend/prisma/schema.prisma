@@ -8,14 +8,102 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// --- Приклад моделі User
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+}
 
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
+  password  String
   name      String?
+  role      Role     @default(USER)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  orders    Order[]
+  cartItems CartItem[]
+
   @@map("users")
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String
+  price       Float
+  image       String
+
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+
+  @@map("products")
+}
+
+model Category {
+  id        Int     @id @default(autoincrement())
+  name      String
+
+  product   Product[]
+
+  @@map("categories")
+}
+
+model CartItem {
+  id          Int       @id @default(autoincrement())
+
+  userId      Int
+  productId   Int
+
+  quantity    Int       @default(1)
+
+  user        User      @relation(fields: [userId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+  @@map("cart_items")
+}
+
+model Order {
+  id        Int           @id @default(autoincrement())
+
+  userId    Int
+  user      User          @relation(fields: [userId], references: [id])
+
+  total     Float
+  status    OrderStatus   @default(PENDING)
+
+  createdAt DateTime @default(now())
+
+  items     OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          Int       @id @default(autoincrement())
+
+  orderId     Int
+  productId   Int
+  
+  quantity    Int
+  price       Float
+
+  order       Order     @relation(fields: [orderId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id])
 }
