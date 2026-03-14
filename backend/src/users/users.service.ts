@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, SafeUserSelect } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -8,21 +8,38 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   findAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({ select: SafeUserSelect });
   }
 
-  findOne(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
+  async findOne(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: SafeUserSelect,
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User ${id} not found`);
+    }
+
+    return user;
+  }
+
+  findByEmail(email: string) {
+    return this.prisma.user.findUnique({ where: { email } });
   }
 
   async create(data: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: { ...data, password: hashedPassword },
+      select: SafeUserSelect,
     });
+
+    return user;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.findOne(id);
     return this.prisma.user.delete({ where: { id } });
   }
 }
