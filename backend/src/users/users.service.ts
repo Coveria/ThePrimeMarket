@@ -26,8 +26,12 @@ export class UsersService {
   findByEmail(email: string) {
     return this.prisma.user.findUnique({ where: { email } });
   }
+
   findById(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: SafeUserSelect,
+    });
   }
 
   async existsByEmail(email: string): Promise<boolean> {
