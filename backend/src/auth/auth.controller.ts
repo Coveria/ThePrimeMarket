@@ -53,7 +53,7 @@ export class AuthController {
     return this.authService.logout(res);
   }
 
-  @Get('@me')
+  @Get('me')
   @Authorization()
   @HttpCode(HttpStatus.OK)
   getMe(@CurrentUser() user: User) {
