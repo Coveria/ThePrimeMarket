@@ -23,17 +23,28 @@ export class ProductsService {
   }
 
   create(dto: CreateProductDto) {
+    const { categoryId, ...rest } = dto;
+
     return this.prisma.product.create({
-      data: dto,
+      data: {
+        ...rest,
+        category: { connect: { id: categoryId } },
+      },
       include: { category: true },
     });
   }
 
   async update(id: number, dto: UpdateProductDto) {
     await this.findOne(id);
+
+    const { categoryId, ...rest } = dto;
+
     return this.prisma.product.update({
       where: { id },
-      data: dto,
+      data: {
+        ...rest,
+        ...(categoryId && { category: { connect: { id: categoryId } } }),
+      },
       include: { category: true },
     });
   }
