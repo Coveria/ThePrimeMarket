@@ -1,0 +1,21 @@
+export type ProductSeed = {
+  categoryName: string;
+  title: string;
+  description: string[];
+  connection?: string;
+  features?: string[];
+  series?: string;
+  interface?: string[];
+  power?: string;
+  batteryType?: string;
+  button?: string;
+  color?: string;
+  country?: string;
+  type?: string;
+  size?: string;
+  weight?: string;
+  price: number;
+  discount?: number;
+  design?: string;
+  images: string[];
+};
